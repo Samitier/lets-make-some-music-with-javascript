@@ -5,6 +5,7 @@ import Home from "./views/home.vue"
 Vue.use(Router)
 
 export default new Router({
+	mode: "history",
 	routes: [
 		{
 			path: "/",
@@ -14,10 +15,12 @@ export default new Router({
 		{
 			path: "/example1",
 			name: "example1",
-			// route level code-splitting
-			// this generates a separate chunk (about.[hash].js) for this route
-			// which is lazy-loaded when the route is visited.
 			component: () => import(/* webpackChunkName: "about" */ "./views/example1/example1.vue"),
+		},
+		{
+			path: "/example2",
+			name: "example2",
+			component: () => import(/* webpackChunkName: "about" */ "./views/example2/example2.vue"),
 		},
 	]
 })

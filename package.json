@@ -17,6 +17,7 @@
   },
   "devDependencies": {
     "@types/webaudioapi": "0.0.27",
+    "@types/webmidi": "^2.0.2",
     "@vue/cli-plugin-babel": "^3.0.4",
     "@vue/cli-plugin-pwa": "^3.0.4",
     "@vue/cli-plugin-typescript": "^3.0.4",
