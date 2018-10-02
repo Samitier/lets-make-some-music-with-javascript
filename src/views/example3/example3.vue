@@ -1,45 +1,46 @@
 <template>
-<div class="row">
-	{{ lastPressedKey ? lastPressedKey.noteName : "" }}
-</div>
+	<NoteViewer :note="noteNames" />
 </template>
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator"
 import Oscillator from "./oscillator"
-import MidiPianoController, { MidiEvent, MidiEventType } from "./midi-piano-controller"
+import MidiPianoController, { MidiKey, MidiEventType } from "./midi-piano-controller"
+import NoteViewer from "./note-viewer.vue"
 
-@Component
-export default class Example1 extends Vue {
+@Component({
+	components: { NoteViewer }
+})
+export default class Example extends Vue {
 
 	context = new AudioContext()
-	oscillator = new Oscillator(this.context, "triangle")
-	midiController = new MidiPianoController(this.onMidiEvent)
+	midiController = new MidiPianoController(this.onMidiPress, this.onMidiRelease)
 
-	pressedKeys: MidiEvent[] = []
+	pressedKeys: PressedKey[] = []
 
-	get lastPressedKey() { return this.pressedKeys[this.pressedKeys.length - 1] }
+	get noteNames() { return this.pressedKeys.map(k => k.key.name).join(" + ") || "-" }
 
 	mounted() {
 		this.midiController.requestAccess()
 	}
 
-	onMidiEvent(event: MidiEvent) {
-		if (event.type === MidiEventType.press) {
-			this.pressedKeys.push(event)
-		} else if (event.type === MidiEventType.release) {
-			const i = this.pressedKeys.findIndex(e => e.key === event.key)
-			if (i >= 0) this.pressedKeys.splice(i, 1)
-		}
-		if (this.pressedKeys.length) {
-			this.oscillator.setFrequency(this.lastPressedKey.frequency)
-			if (!this.oscillator.isPlaying) {
-				this.oscillator.start()
-			}
-		} else if (this.oscillator.isPlaying) {
-			this.oscillator.stop()
-		}
+	onMidiPress(key: MidiKey) {
+		const oscillator = new Oscillator(this.context, key.frequency)
+		oscillator.start()
+		this.pressedKeys.push({ key, oscillator })
 	}
+
+	onMidiRelease(key: MidiKey) {
+		const i = this.pressedKeys.findIndex(k => k.key.number === key.number)
+		if (i < 0) return
+		this.pressedKeys[i].oscillator.stop()
+		this.pressedKeys.splice(i, 1)
+	}
+}
+
+interface PressedKey {
+	key: MidiKey
+	oscillator: Oscillator
 }
 </script>
 

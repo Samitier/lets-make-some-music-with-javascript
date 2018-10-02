@@ -19,7 +19,7 @@ import { Component, Vue } from "vue-property-decorator"
 import Oscillator from "./oscillator"
 
 @Component
-export default class Example1 extends Vue {
+export default class Example extends Vue {
 
 	context = new AudioContext()
 	oscillator = new Oscillator(this.context, "triangle")

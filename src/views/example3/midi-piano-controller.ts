@@ -2,7 +2,10 @@ export default class MidiPianoController {
 
 	readonly noteNames: string[] = ["G#", "A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G"]
 
-	constructor(public callback: (e: MidiEvent) => void) {}
+	constructor(
+		public onKeyPress: (e: MidiKey) => void,
+		public onKeyRelease: (e: MidiKey) => void,
+	) {}
 
 	requestAccess() {
 		navigator.requestMIDIAccess()
@@ -17,25 +20,25 @@ export default class MidiPianoController {
 
 	private handleMidiMessage({ data }: WebMidi.MIDIMessageEvent) {
 		const type = data[0]
-		const key = data[1]
+		const number = data[1]
 		const velocity = data[2]
-		const event: MidiEvent = {
-			type,
-			key,
+		const key: MidiKey = {
+			number,
 			velocity,
-			frequency: this.getFrequency(key),
-			noteName: this.getNoteName(key)
+			frequency: this.getKeyFrequency(number),
+			name: this.getKeyName(number)
 		}
-		this.callback(event)
+		if (type === MidiEventType.press) this.onKeyPress(key)
+		else if (type === MidiEventType.release) this.onKeyRelease(key)
 	}
 
 	// Key to frequency from https://en.wikipedia.org/wiki/Piano_key_frequencies
-	private getFrequency(key: number) {
+	private getKeyFrequency(key: number) {
 		return 2 ** ((key - 49) / 12) * 440
 	}
 
 	// Name + octave from https://en.wikipedia.org/wiki/Piano_key_frequencies
-	private getNoteName(key: number) {
+	private getKeyName(key: number) {
 		return this.noteNames[key % 12] + Math.trunc(key / 12)
 	}
 
@@ -45,12 +48,11 @@ export default class MidiPianoController {
 	}
 }
 
-export interface MidiEvent {
-	type: MidiEventType
-	key: number
+export interface MidiKey {
+	number: number
 	frequency: number
 	velocity: number,
-	noteName: string
+	name: string
 }
 
 export enum MidiEventType {
