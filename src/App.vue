@@ -15,6 +15,7 @@ html, body
 	height 100%
 	overflow hidden
 	margin 0
+	font-family 'Slabo 27px', serif
 a
 	display inline-block
 	padding .5em 1em

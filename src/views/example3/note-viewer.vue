@@ -32,6 +32,7 @@ export default class NoteViewer extends Vue {
 	left 0
 	right 0
 	position fixed
+	text-align center
 	font-size 200px
 	font-weight bold
 	transition all .3s

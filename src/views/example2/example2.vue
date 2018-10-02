@@ -14,7 +14,7 @@ import NoteViewer from "./note-viewer.vue"
 export default class Example extends Vue {
 
 	context = new AudioContext()
-	oscillator = new Oscillator(this.context, "triangle")
+	oscillator = new Oscillator(this.context)
 	midiController = new MidiPianoController(this.onMidiPress, this.onMidiRelease)
 
 	pressedKey: MidiKey | null = null
