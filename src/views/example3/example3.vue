@@ -1,17 +1,16 @@
 <template>
-	<NoteViewer :note="lastPressedKey ? lastPressedKey.noteName : '-'" />
+<div class="row">
+	{{ lastPressedKey ? lastPressedKey.noteName : "" }}
+</div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator"
 import Oscillator from "./oscillator"
 import MidiPianoController, { MidiEvent, MidiEventType } from "./midi-piano-controller"
-import NoteViewer from "./note-viewer.vue"
 
-@Component({
-	components: { NoteViewer }
-})
-export default class Example2 extends Vue {
+@Component
+export default class Example1 extends Vue {
 
 	context = new AudioContext()
 	oscillator = new Oscillator(this.context, "triangle")

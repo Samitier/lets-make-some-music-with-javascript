@@ -3,13 +3,18 @@
 </template>
 
 <script lang="ts">
+import { Component, Vue } from "vue-property-decorator"
 
+@Component
+export default class App extends Vue {}
 </script>
 
 <style lang="stylus">
-.row
-	display flex
-
+html, body
+	width 100%
+	height 100%
+	overflow hidden
+	margin 0
 a
 	display inline-block
 	padding .5em 1em
@@ -22,4 +27,6 @@ a
 	font-weight bold
 	cursor pointer
 	user-select none
+.row
+	display flex
 </style>
