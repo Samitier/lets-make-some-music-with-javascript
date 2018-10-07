@@ -25,8 +25,4 @@ export default class Oscillator {
 	stop() {
 		this.oscillator.stop()
 	}
-
-	setGain(gain: number) {
-		this.gainNode.gain.value = gain
-	}
 }

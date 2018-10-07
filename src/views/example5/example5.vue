@@ -14,11 +14,23 @@ import NoteViewer from "./note-viewer.vue"
 export default class Example extends Vue {
 
 	context = new AudioContext()
-	midiController = new MidiPianoController(this.onMidiPress, this.onMidiRelease)
+	midiController = new MidiPianoController(
+		this.onMidiPress,
+		this.onMidiRelease,
+		this.onMidiTurn
+	)
 
 	pressedKeys: PressedKey[] = []
 
 	private readonly maxPressedKeys = 5
+
+	private readonly maxAttack = 2
+	private readonly attackKey = 1
+	private attack = 0.3
+
+	private readonly maxRelease = 2
+	private readonly releaseKey = 2
+	private release = 0.3
 
 	get noteNames() { return this.pressedKeys.map(k => k.key.name).join(" + ") || "-" }
 
@@ -28,7 +40,13 @@ export default class Example extends Vue {
 
 	onMidiPress(key: MidiKey) {
 		if (this.pressedKeys.length >= this.maxPressedKeys) return
-		const oscillator = new Oscillator(this.context, key.frequency, 1 / this.maxPressedKeys)
+		const oscillator = new Oscillator(
+			this.context,
+			key.frequency,
+			1 / this.maxPressedKeys,
+			this.attack,
+			this.release
+		)
 		this.pressedKeys.push({ key, oscillator })
 		oscillator.start()
 	}
@@ -38,6 +56,17 @@ export default class Example extends Vue {
 		if (i < 0) return
 		this.pressedKeys[i].oscillator.stop()
 		this.pressedKeys.splice(i, 1)
+	}
+
+	onMidiTurn(key: MidiKey) {
+		switch (key.number) {
+			case this.attackKey:
+				this.attack = this.maxAttack * key.velocity
+				break
+			case this.releaseKey:
+				this.release = this.maxRelease * key.velocity
+				break
+		}
 	}
 }
 

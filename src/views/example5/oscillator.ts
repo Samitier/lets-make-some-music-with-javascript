@@ -3,13 +3,12 @@ export default class Oscillator {
 	oscillator!: OscillatorNode
 	gainNode!: GainNode
 
-	attack: number = 0.3
-	release: number = 0.3
-
 	constructor(
 		private context: AudioContext,
 		frequency: number,
 		private gainAmount: number = 1,
+		private attack: number = 0.3,
+		private release: number = 0.3,
 		type: OscillatorType = "sine",
 	) {
 		this.oscillator = context.createOscillator()
@@ -29,9 +28,5 @@ export default class Oscillator {
 	stop() {
 		this.gainNode.gain.linearRampToValueAtTime(0, this.context.currentTime + this.release)
 		this.oscillator.stop(this.context.currentTime + this.release)
-	}
-
-	setGain(gain: number) {
-		this.gainNode.gain.value = gain
 	}
 }

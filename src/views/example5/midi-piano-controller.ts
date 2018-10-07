@@ -5,6 +5,7 @@ export default class MidiPianoController {
 	constructor(
 		public onKeyPress: (e: MidiKey) => void,
 		public onKeyRelease: (e: MidiKey) => void,
+		public onKeyTurn: (e: MidiKey) => void
 	) {}
 
 	requestAccess() {
@@ -24,12 +25,13 @@ export default class MidiPianoController {
 		const velocity = data[2]
 		const key: MidiKey = {
 			number,
-			velocity,
+			velocity: this.getVelocityPercentage(velocity),
 			frequency: this.getKeyFrequency(number),
 			name: this.getKeyName(number)
 		}
 		if (type === MidiEventType.press) this.onKeyPress(key)
 		else if (type === MidiEventType.release) this.onKeyRelease(key)
+		else if (type === MidiEventType.turn) this.onKeyTurn(key)
 	}
 
 	// Key to frequency from https://en.wikipedia.org/wiki/Piano_key_frequencies
@@ -40,6 +42,12 @@ export default class MidiPianoController {
 	// Name + octave from https://en.wikipedia.org/wiki/Piano_key_frequencies
 	private getKeyName(key: number) {
 		return this.noteNames[key % 12] + Math.trunc(key / 12)
+	}
+
+	// Velocity max value is 127. To simplify calculus with the velocity we will set it in a range
+	// from 0 to 1
+	private getVelocityPercentage(velocity: number) {
+		return velocity / 127
 	}
 
 	private onAccessFailure() {
