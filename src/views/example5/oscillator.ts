@@ -9,7 +9,7 @@ export default class Oscillator {
 		private gainAmount: number = 1,
 		private attack: number = 0.3,
 		private release: number = 0.3,
-		type: OscillatorType = "sine",
+		type: OscillatorType = "triangle",
 	) {
 		this.oscillator = context.createOscillator()
 		this.oscillator.type = type

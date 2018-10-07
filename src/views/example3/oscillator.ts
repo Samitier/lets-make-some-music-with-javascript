@@ -5,7 +5,7 @@ export default class Oscillator {
 	constructor(
 		context: AudioContext,
 		frequency: number,
-		type: OscillatorType = "sine"
+		type: OscillatorType = "triangle"
 	) {
 		this.oscillator = context.createOscillator()
 		this.oscillator.type = type

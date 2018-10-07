@@ -5,7 +5,7 @@ export default class Oscillator {
 
 	constructor(
 		private context: AudioContext,
-		private type: OscillatorType = "sine"
+		private type: OscillatorType = "triangle"
 	) {
 		this.init()
 	}
