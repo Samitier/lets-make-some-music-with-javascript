@@ -32,6 +32,9 @@ export default class Example extends Vue {
 	private readonly releaseKey = 2
 	private release = 0.3
 
+	private readonly oscillatorTypeKey = 3
+	private oscillatorType: OscillatorType = "triangle"
+
 	get noteNames() { return this.pressedKeys.map(k => k.key.name).join(" + ") || "-" }
 
 	mounted() {
@@ -45,7 +48,8 @@ export default class Example extends Vue {
 			key.frequency,
 			1 / this.maxPressedKeys,
 			this.attack,
-			this.release
+			this.release,
+			this.oscillatorType
 		)
 		this.pressedKeys.push({ key, oscillator })
 		oscillator.start()
@@ -58,15 +62,25 @@ export default class Example extends Vue {
 		this.pressedKeys.splice(i, 1)
 	}
 
-	onMidiTurn(key: MidiKey) {
-		switch (key.number) {
+	onMidiTurn({ velocity, number }: MidiKey) {
+		switch (number) {
 			case this.attackKey:
-				this.attack = this.maxAttack * key.velocity
+				this.attack = this.maxAttack * velocity
 				break
 			case this.releaseKey:
-				this.release = this.maxRelease * key.velocity
+				this.release = this.maxRelease * velocity
+				break
+			case this.oscillatorTypeKey:
+				this.oscillatorType = this.getOscillatorType(velocity)
 				break
 		}
+	}
+
+	private getOscillatorType(value: number) {
+		if (value < 0.25) return "triangle"
+		else if (value < 0.5) return "square"
+		else if (value < 0.75) return "sine"
+		else return "sawtooth"
 	}
 }
 

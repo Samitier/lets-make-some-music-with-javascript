@@ -21,7 +21,10 @@ export default class Oscillator {
 
 	start() {
 		this.gainNode.gain.value = 0
-		this.gainNode.gain.linearRampToValueAtTime(this.gainAmount, this.context.currentTime + this.attack)
+		this.gainNode.gain.linearRampToValueAtTime(
+			this.gainAmount,
+			this.context.currentTime + this.attack
+		)
 		this.oscillator.start()
 	}
 
